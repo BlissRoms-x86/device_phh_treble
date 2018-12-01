@@ -10,4 +10,4 @@ PRODUCT_DEVICE := phhgsi_arm64_ab
 PRODUCT_BRAND := Android
 PRODUCT_MODEL := Phh-Treble Go
 
-PRODUCT_PACKAGES +=  phh-su
+PRODUCT_PACKAGES +=  phh-su me.phh.superuser
