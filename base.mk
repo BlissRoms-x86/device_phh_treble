@@ -24,7 +24,8 @@ PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
 	ro.build.version.all_codenames=$(PLATFORM_VERSION_ALL_CODENAMES) \
 	ro.build.version.release=$(PLATFORM_VERSION) \
 	ro.build.version.security_patch=$(PLATFORM_SECURITY_PATCH) \
-	ro.adb.secure=0 
+	ro.adb.secure=0 \
+	ro.logd.auditd=true
 	
 #Huawei HiSuite (also other OEM custom programs I guess) it's of no use in AOSP builds
 PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
@@ -45,7 +46,8 @@ PRODUCT_COPY_FILES += \
 #   Provide default libnfc-nci.conf file for devices that does not have one in
 #   vendor/etc
 PRODUCT_COPY_FILES += \
-	device/phh/treble/nfc/libnfc-nci.conf:system/phh/libnfc-nci-oreo.conf
+	device/phh/treble/nfc/libnfc-nci.conf:system/phh/libnfc-nci-oreo.conf \
+	device/phh/treble/nfc/libnfc-nci-huawei.conf:system/phh/libnfc-nci-huawei.conf
 
 # LineageOS build may need this to make NFC work
 PRODUCT_PACKAGES += \
@@ -67,6 +69,12 @@ PRODUCT_PACKAGES += \
 	vintf \
 	me.phh.treble.app \
 
+# Fix Offline Charging on Huawmeme
+PRODUCT_PACKAGES += \
+	huawei-charger
+PRODUCT_COPY_FILES += \
+	$(call find-copy-subdir-files,*,device/phh/treble/huawei_charger/files,system/etc/charger)
+
 PRODUCT_COPY_FILES += \
 	device/phh/treble/twrp/twrp.rc:system/etc/init/twrp.rc \
 	device/phh/treble/twrp/twrp.sh:system/bin/twrp.sh \
@@ -76,6 +84,8 @@ PRODUCT_COPY_FILES += \
 	device/phh/treble/device.rc:system/etc/init/device.rc \
 	device/phh/treble/change-device-name.sh:system/bin/change-device-name.sh
 	
+PRODUCT_PACKAGES += \
+    simg2img_simple
 
 ifneq (,$(wildcard external/exfat))
 PRODUCT_PACKAGES += \
@@ -100,9 +110,24 @@ PRODUCT_COPY_FILES += \
 	device/phh/treble/files/huawei-fingerprint.kl:system/phh/huawei/fingerprint.kl \
 	device/phh/treble/files/samsung-sec_e-pen.idc:system/usr/idc/sec_e-pen.idc \
 	device/phh/treble/files/samsung-9810-floating_feature.xml:system/ph/sam-9810-flo_feat.xml \
+	device/phh/treble/files/mimix3-gpio-keys.kl:system/phh/mimix3-gpio-keys.kl
 
 SELINUX_IGNORE_NEVERALLOWS := true
 
 # Universal NoCutoutOverlay
 PRODUCT_PACKAGES += \
     NoCutoutOverlay
+
+PRODUCT_PACKAGES += \
+    lightsctl \
+    uevent
+
+PRODUCT_COPY_FILES += \
+	device/phh/treble/files/adbd.rc:system/etc/init/adbd.rc
+
+#MTK incoming SMS fix
+PRODUCT_PACKAGES += \
+	mtk-sms-fwk-ready
+
+PRODUCT_PACKAGES += \
+	Stk
